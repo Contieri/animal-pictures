@@ -9,7 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class AnimalPicturesApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AnimalPicturesApplication.class, args);
+		SpringApplication application = new SpringApplication(AnimalPicturesApplication.class);
+		// Moves to the next free port when 8080 is taken, instead of failing to start
+		application.addListeners(new PortFallback());
+		application.run(args);
 	}
 
 }

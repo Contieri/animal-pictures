@@ -3,101 +3,232 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Animal Pictures</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1f2933; }
-    form, .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin-bottom: 1rem; }
-    label { display: flex; flex-direction: column; font-size: .85rem; gap: .25rem; }
-    select, input, button { font: inherit; padding: .4rem .6rem; }
-    button { cursor: pointer; }
-    #status { min-height: 1.5rem; }
-    #status.error { color: #b42318; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-    figure { margin: 0; }
-    figure img { width: 100%; height: auto; border: 1px solid #d0d5dd; }
-    figcaption { font-size: .8rem; color: #52606d; }
-  </style>
+  <title>Snuggle Post · Comfort pictures of cats, dogs and bears</title>
+  <meta name="description" content="Snuggle Post sends you pictures of cute cats, dogs and bears for a little emotional support, whenever you need it.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <h1>Animal Pictures</h1>
+  <a class="skip-link" href="#order">Skip to get comfort</a>
 
-  <form id="fetch-form">
-    <label>Animal
-      <select id="animal" name="animal">
-        <option value="cat">Cat</option>
-        <option value="dog">Dog</option>
-        <option value="bear">Bear</option>
-      </select>
-    </label>
-    <label>How many (1-10)
-      <input id="count" name="count" type="number" min="1" max="10" value="3" required>
-    </label>
-    <button type="submit">Fetch and save</button>
-    <button type="button" id="latest">Show last saved</button>
-  </form>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Snuggle Post home">
+        <span class="brand-mark" aria-hidden="true">✉</span>
+        <span class="brand-name">Snuggle Post</span>
+      </a>
+      <nav aria-label="Main">
+        <a href="#how">How it works</a>
+        <a href="#order">Get comfort</a>
+        <a href="#gallery">Your collection</a>
+        <a href="/swagger-ui.html" class="nav-api" target="_blank" rel="noopener">API docs <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </nav>
+    </div>
+  </header>
 
-  <p id="status" role="status"></p>
-  <div id="pictures" class="grid"></div>
+  <main id="top">
+    <!-- Hero: the pitch -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Emotional support, delivered in pictures</p>
+          <h1>A little comfort, whenever you need it.</h1>
+          <p class="lead">
+            Hard day? Long meeting? Snuggle Post sends you pictures of soft, sweet animals
+            to help you pause and breathe. Pick a companion, choose how many, and they arrive in seconds.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#order">Get my comfort</a>
+            <a class="btn btn-ghost" href="#gallery">See my collection</a>
+          </div>
+          <ul class="hero-stats" aria-label="Your collection so far">
+            <li><strong id="stat-total">0</strong> pictures saved</li>
+            <li><strong>3</strong> companions</li>
+            <li><strong>10</strong> per delivery</li>
+          </ul>
+        </div>
 
-  <script>
-    const form = document.getElementById('fetch-form');
-    const animal = document.getElementById('animal');
-    const count = document.getElementById('count');
-    const status = document.getElementById('status');
-    const pictures = document.getElementById('pictures');
+        <div class="hero-art" aria-hidden="true">
+          <div class="postcard postcard-cat"><span class="postcard-emoji">🐱</span><span>Cats</span></div>
+          <div class="postcard postcard-dog"><span class="postcard-emoji">🐶</span><span>Dogs</span></div>
+          <div class="postcard postcard-bear"><span class="postcard-emoji">🐻</span><span>Bears</span></div>
+        </div>
+      </div>
+    </section>
 
-    function setStatus(text, isError = false) {
-      status.textContent = text;
-      status.className = isError ? 'error' : '';
-    }
+    <!-- How it works: a real three-step sequence -->
+    <section id="how" class="section">
+      <div class="container">
+        <h2 class="section-title">How it works</h2>
+        <ol class="steps">
+          <li class="step step-lavender">
+            <span class="step-number">1</span>
+            <h3>Choose your companion</h3>
+            <p>A calm cat, a cheerful dog or a big, cuddly bear. Pick whoever feels right today.</p>
+          </li>
+          <li class="step step-peach">
+            <span class="step-number">2</span>
+            <h3>Choose how many</h3>
+            <p>One quiet moment or a whole bundle. You can ask for up to 10 pictures at once.</p>
+          </li>
+          <li class="step step-mint">
+            <span class="step-number">3</span>
+            <h3>Feel a little better</h3>
+            <p>Your pictures arrive right away and stay in your collection, ready for the next hard moment.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-    async function errorText(response) {
-      try {
-        const problem = await response.json();
-        return problem.detail || problem.title || response.statusText;
-      } catch {
-        return response.statusText;
-      }
-    }
+    <!-- Order form -->
+    <section id="order" class="section section-tinted">
+      <div class="container">
+        <h2 class="section-title">Get your comfort</h2>
+        <p class="section-lead">Every picture is brand new and saved to your collection.</p>
 
-    function show(items) {
-      pictures.replaceChildren(...items.map(p => {
-        const figure = document.createElement('figure');
-        const img = document.createElement('img');
-        img.src = p.imageUrl;
-        img.alt = 'Picture of a ' + p.animal;
-        const caption = document.createElement('figcaption');
-        caption.textContent = '#' + p.id + ' · ' + p.contentType + ' · ' + Math.round(p.sizeBytes / 1024) + ' KB';
-        figure.append(img, caption);
-        return figure;
-      }));
-    }
+        <form id="order-form" class="order-card" novalidate>
+          <fieldset class="animal-picker">
+            <legend>1. Choose your companion</legend>
+            <div class="animal-options">
+              <label class="animal-option animal-cat">
+                <input type="radio" name="animal" value="cat" checked>
+                <span class="animal-emoji" aria-hidden="true">🐱</span>
+                <span class="animal-name">Cat</span>
+                <span class="animal-mood">Calm and curious</span>
+              </label>
+              <label class="animal-option animal-dog">
+                <input type="radio" name="animal" value="dog">
+                <span class="animal-emoji" aria-hidden="true">🐶</span>
+                <span class="animal-name">Dog</span>
+                <span class="animal-mood">Loyal and cheerful</span>
+              </label>
+              <label class="animal-option animal-bear">
+                <input type="radio" name="animal" value="bear">
+                <span class="animal-emoji" aria-hidden="true">🐻</span>
+                <span class="animal-name">Bear</span>
+                <span class="animal-mood">Big, soft hugs</span>
+              </label>
+            </div>
+          </fieldset>
 
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      setStatus('Fetching ' + count.value + ' ' + animal.value + ' picture(s)...');
-      const response = await fetch('/api/pictures/' + animal.value + '?count=' + count.value, { method: 'POST' });
-      if (!response.ok) {
-        setStatus(await errorText(response), true);
-        return;
-      }
-      const items = await response.json();
-      show(items);
-      setStatus('Saved ' + items.length + ' ' + animal.value + ' picture(s).');
-    });
+          <div class="order-row">
+            <div class="count-field">
+              <label for="count">2. How many pictures?</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" id="count-minus" aria-label="One less picture">−</button>
+                <input id="count" name="count" type="number" min="1" max="10" value="3" inputmode="numeric" aria-describedby="count-hint">
+                <button type="button" class="stepper-btn" id="count-plus" aria-label="One more picture">+</button>
+              </div>
+              <p id="count-hint" class="hint">From 1 to 10</p>
+            </div>
 
-    document.getElementById('latest').addEventListener('click', async () => {
-      setStatus('Loading the last saved ' + animal.value + '...');
-      const response = await fetch('/api/pictures/' + animal.value + '/latest/metadata');
-      if (!response.ok) {
-        pictures.replaceChildren();
-        setStatus(await errorText(response), true);
-        return;
-      }
-      const picture = await response.json();
-      show([picture]);
-      setStatus('Last saved ' + animal.value + ' (stored ' + new Date(picture.createdAt).toLocaleString() + ').');
-    });
-  </script>
+            <div class="order-actions">
+              <button type="submit" class="btn btn-primary btn-large" id="send-btn">
+                <span class="btn-spinner" aria-hidden="true"></span>
+                <span class="btn-label">Send me comfort</span>
+              </button>
+              <button type="button" class="btn btn-ghost" id="latest-btn"><span>See my latest <span id="latest-animal">cat</span></span></button>
+            </div>
+          </div>
+        </form>
+
+        <div class="results">
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+          <div id="results-grid" class="photo-grid" aria-busy="false"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="section">
+      <div class="container">
+        <div class="gallery-head">
+          <div>
+            <h2 class="section-title">Your comfort collection</h2>
+            <p class="section-lead">Every picture you have received, newest first. Click one to see it full size.</p>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Filter your collection by animal">
+          <button type="button" role="tab" class="tab" id="tab-all" data-animal="" aria-selected="true">All <span class="tab-count" id="count-total">0</span></button>
+          <button type="button" role="tab" class="tab tab-cat" id="tab-cat" data-animal="cat" aria-selected="false">Cats <span class="tab-count" id="count-cat">0</span></button>
+          <button type="button" role="tab" class="tab tab-dog" id="tab-dog" data-animal="dog" aria-selected="false">Dogs <span class="tab-count" id="count-dog">0</span></button>
+          <button type="button" role="tab" class="tab tab-bear" id="tab-bear" data-animal="bear" aria-selected="false">Bears <span class="tab-count" id="count-bear">0</span></button>
+        </div>
+
+        <div id="gallery-grid" class="photo-grid" role="tabpanel" aria-busy="true"></div>
+        <p id="gallery-empty" class="empty" hidden></p>
+        <div class="load-more-wrap">
+          <button type="button" class="btn btn-ghost" id="load-more" hidden>
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span class="btn-label">Show more</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why it helps -->
+    <section class="section section-tinted">
+      <div class="container">
+        <h2 class="section-title">Why a cute picture helps</h2>
+        <div class="reasons">
+          <article class="reason">
+            <h3>A small pause</h3>
+            <p>Looking at something gentle for a moment gives your mind a break from whatever is weighing on it.</p>
+          </article>
+          <article class="reason">
+            <h3>Something to share</h3>
+            <p>A sleepy cat or a smiling dog is an easy way to make a friend smile too.</p>
+          </article>
+          <article class="reason">
+            <h3>Always there</h3>
+            <p>Your collection stays saved, so comfort is one click away, any time of day.</p>
+          </article>
+        </div>
+        <p class="disclaimer">Snuggle Post is a little source of comfort, not a replacement for professional care. If you are struggling, please reach out to someone you trust or a local support line.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p><strong>Snuggle Post</strong> · Comfort, one cute animal at a time.</p>
+      <p class="credits">
+        Pictures from
+        <a href="https://cataas.com" target="_blank" rel="noopener">cataas.com</a>,
+        <a href="https://place.dog" target="_blank" rel="noopener">place.dog</a> and
+        <a href="https://placebear.com" target="_blank" rel="noopener">placebear.com</a>.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Full-size viewer -->
+  <dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
+    <div class="viewer-inner">
+      <button type="button" class="viewer-close" id="viewer-close" aria-label="Close">×</button>
+      <div class="viewer-stage">
+        <button type="button" class="viewer-nav viewer-prev" id="viewer-prev" aria-label="Previous picture">‹</button>
+        <figure class="viewer-figure">
+          <div class="viewer-loading" id="viewer-loading"><span class="spinner" aria-hidden="true"></span><span>Loading picture…</span></div>
+          <img id="viewer-img" alt="">
+        </figure>
+        <button type="button" class="viewer-nav viewer-next" id="viewer-next" aria-label="Next picture">›</button>
+      </div>
+      <div class="viewer-details">
+        <h2 id="viewer-title" class="viewer-title"></h2>
+        <dl class="viewer-meta">
+          <div><dt>Saved</dt><dd id="viewer-date"></dd></div>
+          <div><dt>Size</dt><dd id="viewer-size"></dd></div>
+          <div><dt>Format</dt><dd id="viewer-format"></dd></div>
+          <div class="viewer-source"><dt>Source</dt><dd><a id="viewer-source" target="_blank" rel="noopener"></a></dd></div>
+        </dl>
+        <p class="viewer-position" id="viewer-position"></p>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="js/app.js"></script>
 </body>
 </html>

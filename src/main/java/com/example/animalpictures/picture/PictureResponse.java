@@ -13,13 +13,17 @@ public record PictureResponse(
         String imageUrl) {
 
     static PictureResponse from(Picture picture) {
+        return from(PictureSummary.of(picture));
+    }
+
+    static PictureResponse from(PictureSummary summary) {
         return new PictureResponse(
-                picture.getId(),
-                picture.getAnimalType().key(),
-                picture.getContentType(),
-                picture.getSizeBytes(),
-                picture.getSourceUrl(),
-                picture.getCreatedAt(),
-                "/api/pictures/" + picture.getId() + "/image");
+                summary.id(),
+                summary.animalType().key(),
+                summary.contentType(),
+                summary.sizeBytes(),
+                summary.sourceUrl(),
+                summary.createdAt(),
+                "/api/pictures/" + summary.id() + "/image");
     }
 }

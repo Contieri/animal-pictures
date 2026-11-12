@@ -92,6 +92,41 @@ class PictureControllerIntegrationTest {
     }
 
     @Test
+    void listsStoredPicturesNewestFirstWithPagination() throws Exception {
+        when(client.fetch(AnimalType.DOG)).thenReturn(new FetchedPicture(FIRST, "image/jpeg", "https://place.dog/1/1"));
+        when(client.fetch(AnimalType.CAT)).thenReturn(new FetchedPicture(SECOND, "image/png", "https://cataas.com/cat"));
+        mvc.perform(post("/api/pictures/dog").param("count", "3")).andExpect(status().isCreated());
+        mvc.perform(post("/api/pictures/cat").param("count", "2")).andExpect(status().isCreated());
+
+        mvc.perform(get("/api/pictures"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalItems").value(5))
+                .andExpect(jsonPath("$.items[0].animal").value("cat"))
+                .andExpect(jsonPath("$.items[4].animal").value("dog"));
+
+        mvc.perform(get("/api/pictures").param("animal", "dog").param("size", "2").param("page", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items.length()").value(1))
+                .andExpect(jsonPath("$.items[0].animal").value("dog"))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.totalItems").value(3))
+                .andExpect(jsonPath("$.totalPages").value(2));
+
+        mvc.perform(get("/api/pictures/counts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cat").value(2))
+                .andExpect(jsonPath("$.dog").value(3))
+                .andExpect(jsonPath("$.bear").value(0))
+                .andExpect(jsonPath("$.total").value(5));
+    }
+
+    @Test
+    void listRejectsInvalidFilters() throws Exception {
+        mvc.perform(get("/api/pictures").param("animal", "cow")).andExpect(status().isBadRequest());
+        mvc.perform(get("/api/pictures").param("size", "101")).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void returns404WhenNoPictureIsStored() throws Exception {
         mvc.perform(get("/api/pictures/bear/latest"))
                 .andExpect(status().isNotFound())

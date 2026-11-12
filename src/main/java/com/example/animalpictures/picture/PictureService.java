@@ -5,8 +5,13 @@ import com.example.animalpictures.client.FetchedPicture;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +54,26 @@ public class PictureService {
                 .orElseThrow(() -> new PictureNotFoundException(
                         "No " + animalType.key() + " picture stored yet. Fetch some first with POST /api/pictures/"
                                 + animalType.key() + "?count=1"));
+    }
+
+    /** Stored pictures, newest first. {@code animalType} may be null for all animals. */
+    @Transactional(readOnly = true)
+    public Page<PictureSummary> list(AnimalType animalType, int page, int size) {
+        return repository.findSummaries(animalType, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+    }
+
+    /** How many pictures are stored per animal, plus the total. */
+    @Transactional(readOnly = true)
+    public Map<String, Long> counts() {
+        Map<String, Long> counts = new LinkedHashMap<>();
+        long total = 0;
+        for (AnimalType type : AnimalType.values()) {
+            long count = repository.countByAnimalType(type);
+            counts.put(type.key(), count);
+            total += count;
+        }
+        counts.put("total", total);
+        return counts;
     }
 
     @Transactional(readOnly = true)

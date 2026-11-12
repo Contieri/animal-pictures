@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animal Pictures</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1f2933; }
+    form, .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin-bottom: 1rem; }
+    label { display: flex; flex-direction: column; font-size: .85rem; gap: .25rem; }
+    select, input, button { font: inherit; padding: .4rem .6rem; }
+    button { cursor: pointer; }
+    #status { min-height: 1.5rem; }
+    #status.error { color: #b42318; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    figure { margin: 0; }
+    figure img { width: 100%; height: auto; border: 1px solid #d0d5dd; }
+    figcaption { font-size: .8rem; color: #52606d; }
+  </style>
+</head>
+<body>
+  <h1>Animal Pictures</h1>
+
+  <form id="fetch-form">
+    <label>Animal
+      <select id="animal" name="animal">
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+        <option value="bear">Bear</option>
+      </select>
+    </label>
+    <label>How many (1-10)
+      <input id="count" name="count" type="number" min="1" max="10" value="3" required>
+    </label>
+    <button type="submit">Fetch and save</button>
+    <button type="button" id="latest">Show last saved</button>
+  </form>
+
+  <p id="status" role="status"></p>
+  <div id="pictures" class="grid"></div>
+
+  <script>
+    const form = document.getElementById('fetch-form');
+    const animal = document.getElementById('animal');
+    const count = document.getElementById('count');
+    const status = document.getElementById('status');
+    const pictures = document.getElementById('pictures');
+
+    function setStatus(text, isError = false) {
+      status.textContent = text;
+      status.className = isError ? 'error' : '';
+    }
+
+    async function errorText(response) {
+      try {
+        const problem = await response.json();
+        return problem.detail || problem.title || response.statusText;
+      } catch {
+        return response.statusText;
+      }
+    }
+
+    function show(items) {
+      pictures.replaceChildren(...items.map(p => {
+        const figure = document.createElement('figure');
+        const img = document.createElement('img');
+        img.src = p.imageUrl;
+        img.alt = 'Picture of a ' + p.animal;
+        const caption = document.createElement('figcaption');
+        caption.textContent = '#' + p.id + ' · ' + p.contentType + ' · ' + Math.round(p.sizeBytes / 1024) + ' KB';
+        figure.append(img, caption);
+        return figure;
+      }));
+    }
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      setStatus('Fetching ' + count.value + ' ' + animal.value + ' picture(s)...');
+      const response = await fetch('/api/pictures/' + animal.value + '?count=' + count.value, { method: 'POST' });
+      if (!response.ok) {
+        setStatus(await errorText(response), true);
+        return;
+      }
+      const items = await response.json();
+      show(items);
+      setStatus('Saved ' + items.length + ' ' + animal.value + ' picture(s).');
+    });
+
+    document.getElementById('latest').addEventListener('click', async () => {
+      setStatus('Loading the last saved ' + animal.value + '...');
+      const response = await fetch('/api/pictures/' + animal.value + '/latest/metadata');
+      if (!response.ok) {
+        pictures.replaceChildren();
+        setStatus(await errorText(response), true);
+        return;
+      }
+      const picture = await response.json();
+      show([picture]);
+      setStatus('Last saved ' + animal.value + ' (stored ' + new Date(picture.createdAt).toLocaleString() + ').');
+    });
+  </script>
+</body>
+</html>

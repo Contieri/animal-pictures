@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    image: animal-pictures:latest
+    container_name: animal-pictures
+    ports:
+      - "8080:8080"
+    volumes:
+      # Keeps the H2 database file between restarts and rebuilds
+      - picture-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  picture-data:

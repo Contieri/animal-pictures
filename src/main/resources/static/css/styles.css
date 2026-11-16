@@ -121,15 +121,15 @@ nav a.nav-api:hover { background: var(--mint-deep); color: var(--white); }
 
 .hero-art { position: relative; height: 360px; }
 .postcard {
-  position: absolute; width: 200px; height: 240px; border-radius: var(--radius);
+  position: absolute; width: 168px; height: 212px; border-radius: var(--radius);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   font-family: var(--font-display); font-weight: 600; font-size: 22px;
   box-shadow: var(--shadow); border: 8px solid var(--white);
 }
-.postcard-emoji { font-size: 72px; line-height: 1; }
-.postcard-cat { background: var(--lavender); color: var(--lavender-deep); left: 4%; top: 40px; transform: rotate(-8deg); }
-.postcard-dog { background: var(--peach); color: var(--peach-deep); left: 32%; top: 0; transform: rotate(3deg); z-index: 2; }
-.postcard-bear { background: var(--mint); color: var(--mint-deep); left: 58%; top: 70px; transform: rotate(9deg); }
+.postcard-art { width: 100px; height: 100px; }
+.postcard-cat { background: var(--lavender); color: var(--lavender-deep); left: 1%; top: 56px; transform: rotate(-7deg); }
+.postcard-dog { background: var(--peach); color: var(--peach-deep); left: 34%; top: 0; transform: rotate(2deg); z-index: 2; }
+.postcard-bear { background: var(--mint); color: var(--mint-deep); left: 66%; top: 88px; transform: rotate(8deg); }
 @media (prefers-reduced-motion: no-preference) {
   .postcard { animation: float 6s ease-in-out infinite; }
   .postcard-dog { animation-delay: -2s; }
@@ -174,7 +174,8 @@ legend, .count-field label { font-weight: 700; margin-bottom: 12px; padding: 0; 
   content: "✓"; position: absolute; top: 10px; right: 12px; width: 26px; height: 26px; border-radius: 50%;
   display: grid; place-items: center; background: var(--deep); color: var(--white); font-weight: 700; font-size: 14px;
 }
-.animal-emoji { font-size: 44px; line-height: 1.2; }
+.animal-icon { width: 64px; height: 64px; margin-bottom: 4px; transition: transform 0.2s; }
+.animal-option:hover .animal-icon, .animal-option:has(input:checked) .animal-icon { transform: rotate(-6deg) scale(1.06); }
 .animal-name { font-family: var(--font-display); font-weight: 600; font-size: 21px; }
 .animal-mood { font-size: 14px; opacity: 0.85; }
 .animal-cat { --deep: var(--lavender-deep); background: var(--lavender); color: var(--lavender-deep); }
@@ -225,7 +226,12 @@ legend, .count-field label { font-weight: 700; margin-bottom: 12px; padding: 0; 
 /* Skeleton placeholders while pictures are on their way */
 .skeleton { padding: 10px 10px 12px; border-radius: var(--radius-small); background: var(--white); box-shadow: var(--shadow); }
 .skeleton-frame, .skeleton-line { border-radius: 8px; background: linear-gradient(100deg, var(--lavender) 30%, #f3effd 50%, var(--lavender) 70%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
-.skeleton-frame { aspect-ratio: 1 / 1; display: grid; place-items: center; font-size: 34px; }
+.skeleton-frame { aspect-ratio: 1 / 1; display: grid; place-items: center; }
+.skeleton-icon { width: 42%; height: auto; opacity: 0.55; }
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton-icon { animation: nod 1.4s ease-in-out infinite; }
+  @keyframes nod { 50% { transform: translateY(-4px) rotate(-4deg); } }
+}
 .skeleton-line { height: 14px; width: 60%; margin-top: 12px; }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
@@ -272,7 +278,18 @@ legend, .count-field label { font-weight: 700; margin-bottom: 12px; padding: 0; 
 .viewer-prev { left: 10px; }
 .viewer-next { right: 10px; }
 .viewer-details { padding: 56px 24px 24px; min-width: 0; }
-.viewer-title { font-size: 26px; margin-bottom: 18px; }
+.viewer-title { font-size: 26px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.viewer-icon { width: 40px; height: 40px; flex: none; }
+
+/* The cat and the bear are real photos: show them as round portraits, ringed in their animal's color */
+img[src$=".png"]:is(.postcard-art, .animal-icon, .skeleton-icon, .viewer-icon) {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--white);
+  box-shadow: 0 0 0 2px var(--lavender-deep);
+}
+img[src$="bear.png"]:is(.postcard-art, .animal-icon, .skeleton-icon, .viewer-icon) { box-shadow: 0 0 0 2px var(--mint-deep); }
+img[src$=".png"].skeleton-icon { opacity: 0.8; }
 .viewer-meta { margin: 0; display: grid; gap: 14px; }
 .viewer-meta dt { font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .viewer-meta dd { margin: 2px 0 0; overflow-wrap: anywhere; }
@@ -282,8 +299,8 @@ legend, .count-field label { font-weight: 700; margin-bottom: 12px; padding: 0; 
 @media (max-width: 860px) {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-art { height: 280px; max-width: 420px; width: 100%; margin: 0 auto; }
-  .postcard { width: 150px; height: 180px; }
-  .postcard-emoji { font-size: 54px; }
+  .postcard { width: 128px; height: 162px; font-size: 18px; border-width: 6px; }
+  .postcard-art { width: 72px; height: 72px; }
   .steps, .reasons { grid-template-columns: 1fr; }
   .viewer-inner { grid-template-columns: 1fr; }
   .viewer-details { padding: 20px 24px 24px; }
@@ -292,7 +309,7 @@ legend, .count-field label { font-weight: 700; margin-bottom: 12px; padding: 0; 
   nav a:not(.nav-api) { display: none; }
   .animal-options { grid-template-columns: 1fr; }
   .animal-option { flex-direction: row; gap: 12px; text-align: left; padding: 14px 16px; }
-  .animal-emoji { font-size: 34px; }
+  .animal-icon { width: 44px; height: 44px; margin-bottom: 0; }
   .animal-mood { margin-left: auto; }
   .order-card { padding: 20px; }
   .order-actions, .order-actions .btn { width: 100%; }

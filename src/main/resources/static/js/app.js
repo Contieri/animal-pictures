@@ -3,10 +3,19 @@
 /* Snuggle Post front end: order form, gallery with tabs and paging, full-size viewer. */
 
 const ANIMALS = {
-  cat: { singular: "cat", plural: "cats", title: "Cat", emoji: "🐱" },
-  dog: { singular: "dog", plural: "dogs", title: "Dog", emoji: "🐶" },
-  bear: { singular: "bear", plural: "bears", title: "Bear", emoji: "🐻" }
+  cat: { singular: "cat", plural: "cats", title: "Cat", icon: "img/cat.png" },
+  dog: { singular: "dog", plural: "dogs", title: "Dog", icon: "img/dog.svg" },
+  bear: { singular: "bear", plural: "bears", title: "Bear", icon: "img/bear.png" }
 };
+
+/** The little illustration of an animal, used as decoration (screen readers skip it). */
+function animalIcon(animal, className) {
+  const img = document.createElement("img");
+  img.src = ANIMALS[animal].icon;
+  img.alt = "";
+  img.className = className;
+  return img;
+}
 const GALLERY_PAGE_SIZE = 12;
 const dateFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" });
 const shortDateFormat = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
@@ -74,7 +83,7 @@ function skeletons(count, animal) {
     card.setAttribute("aria-hidden", "true");
     const frame = document.createElement("div");
     frame.className = "skeleton-frame";
-    frame.textContent = animal ? ANIMALS[animal].emoji : "";
+    if (animal) frame.append(animalIcon(animal, "skeleton-icon"));
     const line = document.createElement("div");
     line.className = "skeleton-line";
     card.append(frame, line);
@@ -287,7 +296,7 @@ const viewer = (() => {
     img.alt = `A ${animal.singular}, picture #${picture.id}`;
     img.src = picture.imageUrl;
 
-    $("viewer-title").textContent = `${animal.emoji} ${animal.title} #${picture.id}`;
+    $("viewer-title").replaceChildren(animalIcon(picture.animal, "viewer-icon"), `${animal.title} #${picture.id}`);
     $("viewer-date").textContent = dateFormat.format(new Date(picture.createdAt));
     $("viewer-size").textContent = formatSize(picture.sizeBytes);
     $("viewer-format").textContent = formatType(picture.contentType);
